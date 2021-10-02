@@ -1,3 +1,12 @@
 <resources>
-    <string name="app_name">Metronome</string>
+    <string name="app_name">Lucid Metronome</string>
+    <string name="image_description">Visualization</string>
+    <string name="btn_start">Start</string>
+    <string name="btn_stop">Stop</string>
+    <string name="pause">Pause</string>
+    <string name="resume">Resume</string>
+    <string name="stop">Stop</string>
+    <string name="quit">Quit</string>
+    <string name="is_paused">is paused</string>
+    <string name="is_running">is running</string>
 </resources>
