@@ -173,10 +173,14 @@ class BeatService : LifecycleService() {
         if (isPlaying) {
             return
         }
-        val channel = NotificationChannel(channelId, "Metronome", NotificationManager.IMPORTANCE_DEFAULT)
-        channel.setSound(null, null)
+
         val notificationManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
-        notificationManager.createNotificationChannel(channel)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val channel =
+                NotificationChannel(channelId, "Metronome", NotificationManager.IMPORTANCE_DEFAULT)
+            channel.setSound(null, null)
+            notificationManager.createNotificationChannel(channel)
+        }
 
         val toggleIntent = Intent(ControlReceiver.ACTION_TOGGLE)
         val pendingIntent = PendingIntent.getBroadcast(
@@ -207,8 +211,8 @@ class BeatService : LifecycleService() {
                 notificationBuilder
                     .setContentText(stateText)
                     .clearActions()
-                    .addAction(R.drawable.ic_launcher_background, label, pendingIntent)
-                    .addAction(R.drawable.ic_launcher_background, getString(R.string.stop), pendingIntentStop)
+                    .addAction(0, label, pendingIntent)
+                    .addAction(0, getString(R.string.stop), pendingIntentStop)
                 notificationManager.notify(notificationId, notificationBuilder.build())
             }
         }

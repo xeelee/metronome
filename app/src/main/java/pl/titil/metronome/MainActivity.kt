@@ -151,21 +151,32 @@ class MainActivity : AppCompatActivity() {
         val intent = Intent(this, BeatService::class.java)
         btnStart.setOnClickListener {
             it.isEnabled = false
-            startForegroundService(intent)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                startForegroundService(intent)
+            } else {
+                startService(intent)
+            }
         }
         btnStop.setOnClickListener {
             it.isEnabled = false
             beatService!!.stopAll()
         }
 
+        val progressMin = 40
         seekBar = binding.controls.seekBar.apply {
             max = 240
-            min = 40
             progress = ticksModel.bpm.value!!
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            seekBar.min = progressMin
         }
         seekBar.setOnSeekBarChangeListener(object: SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seek: SeekBar, progress: Int, fromUser: Boolean) {
-                ticksModel.bpm.value = progress
+                if (progress < progressMin) {
+                    seek.progress = progressMin
+                } else {
+                    ticksModel.bpm.value = progress
+                }
             }
             override fun onStartTrackingTouch(seek: SeekBar) {}
             override fun onStopTrackingTouch(seek: SeekBar) {}
