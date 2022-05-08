@@ -25,6 +25,18 @@ class TicksViewModel : ViewModel() {
         config.postValue(ticks)
     }
 
+    fun setBpmByInterval(interval: Long) {
+        bpm.value = getBpmByInterval(interval)
+    }
+
+    fun getBpmByInterval(interval: Long): Int {
+        return ((60f / interval.toFloat()) * 1000f).toInt()
+    }
+
+    fun getIntervalByBpm(bpm: Int): Long {
+        return ((60f / bpm.toFloat()) * 1000f).toLong()
+    }
+
     fun switchToNextState(index: Int) {
         val currentTickState = getTickAt(index)
         setTickAt(index, when(currentTickState) {

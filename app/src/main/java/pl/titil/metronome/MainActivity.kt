@@ -14,7 +14,6 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.AppCompatTextView
-import java.util.*
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.*
@@ -31,9 +30,12 @@ class MainActivity : AppCompatActivity() {
     private lateinit var seekBar: SeekBar
     private lateinit var txtBpm: AppCompatTextView
     private lateinit var beatAnimator: BeatAnimator
+    private lateinit var tapText: AppCompatTextView
+    private lateinit var tapTextAnimator: TextColorAnimator
 
     private lateinit var tickButtons: TickButtons
     private lateinit var ticksModel: TicksViewModel
+    private lateinit var tapTempo: TapTempo
 
     var sJob: Job? = null
     var bJob: Job? = null
@@ -91,11 +93,11 @@ class MainActivity : AppCompatActivity() {
             if (beatService!!.interval == 0L) {
                 ticksModel.bpm.value = ticksModel.bpm.value
             } else {
-                ticksModel.bpm.value = ((60f / beatService!!.interval.toFloat()) * 1000f).toInt()
+                ticksModel.setBpmByInterval(beatService!!.interval)
             }
             ticksModel.bpm.observe(this@MainActivity) {
                 if (beatService != null) {
-                    beatService!!.interval = ((60f / it.toFloat()) * 1000f).toLong()
+                    beatService!!.interval = ticksModel.getIntervalByBpm(it)
                 }
                 txtBpm.text = it.toString()
             }
@@ -181,6 +183,36 @@ class MainActivity : AppCompatActivity() {
             override fun onStartTrackingTouch(seek: SeekBar) {}
             override fun onStopTrackingTouch(seek: SeekBar) {}
         })
+
+        tapTempo = TapTempo(lifecycleScope)
+
+        lifecycleScope.launch {
+            tapTempo.tempo.collect {
+                val interval = it
+                seekBar.progress = ticksModel.getBpmByInterval(interval)
+            }
+        }
+
+        tapText = binding.visuals.tapText
+        tapTextAnimator = TextColorAnimator(tapText, resources.getColor(R.color.orange_500, theme))
+
+        tapText.setOnClickListener {
+            tapTempo.tap()
+        }
+
+        txtBpm.setOnClickListener {
+            tapTempo.tap()
+        }
+
+        lifecycleScope.launch {
+            tapTempo.active.collect {
+                if (it) {
+                    tapTextAnimator.forward()
+                } else {
+                    tapTextAnimator.back()
+                }
+            }
+        }
     }
 
     override fun onResume() {
