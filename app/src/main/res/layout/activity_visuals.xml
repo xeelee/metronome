@@ -26,16 +26,32 @@
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/bpmText"
         android:layout_width="0dp"
-        android:layout_height="245dp"
+        android:layout_height="180dp"
         android:fontFamily="@font/major_mono_display"
-        android:paddingTop="50dp"
+        android:paddingTop="40dp"
         android:text="0"
         android:textAlignment="center"
         android:textColor="@color/purple_200"
         android:textSize="120sp"
         android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/tapText"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/tapText"
+        android:layout_width="0dp"
+        android:layout_height="30dp"
+        android:layout_marginBottom="16dp"
+        android:paddingTop="5dp"
+        android:text="TAP TEMPO"
+        android:textAlignment="center"
+        android:textColor="@color/purple_200"
+        android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent" />
 
     <androidx.appcompat.widget.AppCompatButton
