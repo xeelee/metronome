@@ -111,7 +111,11 @@ class BeatService : LifecycleService() {
             addAction(ControlReceiver.ACTION_TOGGLE)
             addAction(ControlReceiver.ACTION_STOP)
         }
-        registerReceiver(receiver, filter)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            registerReceiver(receiver, filter, RECEIVER_EXPORTED)
+        } else {
+            registerReceiver(receiver, filter)
+        }
         Log.d("register", receiver.toString())
     }
 
